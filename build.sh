@@ -2,8 +2,8 @@
 
 set -eu
 
-declare -r toolchain_directory='/tmp/venti'
-declare -r share_directory="${toolchain_directory}/usr/local/share/venti"
+declare -r toolchain_directory='/tmp/dragonfly-gcc-cross'
+declare -r share_directory="${toolchain_directory}/usr/local/share/dragonfly-gcc-cross"
 
 declare -r environment="LD_LIBRARY_PATH=${toolchain_directory}/lib PATH=${PATH}:${toolchain_directory}/bin"
 
@@ -526,7 +526,7 @@ for triplet in "${targets[@]}"; do
 	
 	cd "$(mktemp --directory)"
 	
-	declare sysroot_url="https://github.com/AmanoTeam/Venti/releases/download/sysroot/${triplet}.tar.xz"
+	declare sysroot_url="https://github.com/AmanoTeam/dragonfly-gcc-cross/releases/download/sysroot/${triplet}.tar.xz"
 	declare sysroot_file="${PWD}/${triplet}.tar.xz"
 	declare sysroot_directory="${PWD}/${triplet}"
 	

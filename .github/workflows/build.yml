@@ -25,7 +25,7 @@ jobs:
         path: |
           /tmp/x86_64-linux-gnu.tar.xz
           /tmp/x86_64-linux-gnu.tar.xz.sha256
-    - name: Build Venti
+    - name: Build dragonfly-gcc-cross
       if: ${{ steps.check-cache.outputs.cache-hit != 'true' }}
       run: |
         bash './build.sh' 'native'
@@ -51,7 +51,7 @@ jobs:
       if: ${{ steps.check-cache.outputs.cache-hit != 'true' }}
       run: |
         declare tarball_filename='/tmp/x86_64-linux-gnu.tar.xz'
-        tar --directory='/tmp' --create --file=- 'venti' | xz --threads='0' --compress -9 > "${tarball_filename}"
+        tar --directory='/tmp' --create --file=- 'dragonfly-gcc-cross' | xz --threads='0' --compress -9 > "${tarball_filename}"
         sha256sum "${tarball_filename}" | sed 's|/tmp/||' > "${tarball_filename}.sha256"
     - name: Upload artifact
       if: ${{ steps.check-cache.outputs.cache-hit != 'true' }}
@@ -132,8 +132,8 @@ jobs:
     - name: Setup toolchain
       run: |
         tar --directory='/tmp' --extract --file='/tmp/x86_64-linux-gnu.tar.xz'
-        mv '/tmp/venti' '/tmp/venti-toolchain'
-    - name: Cross-compile Venti to ${{ matrix.target }}
+        mv '/tmp/dragonfly-gcc-cross' '/tmp/dragonfly-gcc-cross-toolchain'
+    - name: Cross-compile dragonfly-gcc-cross to ${{ matrix.target }}
       run: |
         source './tools/setup_toolchain.sh'
         
@@ -188,12 +188,12 @@ jobs:
         elif [[ '${{ matrix.target }}' = *'-dragonfly' ]]; then
             # declare -r VENTI_TAG='gcc-15'
             # declare -r VENTI_TARBALL='/tmp/toolchain.tar.xz'
-            # declare -r VENTI_URL="https://github.com/AmanoTeam/Venti/releases/download/${VENTI_TAG}/x86_64-unknown-linux-gnu.tar.xz"
+            # declare -r VENTI_URL="https://github.com/AmanoTeam/dragonfly-gcc-cross/releases/download/${VENTI_TAG}/x86_64-unknown-linux-gnu.tar.xz"
             
             # curl --show-error --connect-timeout '10' --retry '15' --retry-all-errors --fail --silent --location --url "${VENTI_URL}" --output "${VENTI_TARBALL}"
             # tar --directory="$(dirname "${VENTI_TARBALL}")" --extract --file="${VENTI_TARBALL}"
             
-            # export VENTI_HOME='/tmp/venti'
+            # export VENTI_HOME='/tmp/dragonfly-gcc-cross'
             export PATH="${VENTI_HOME}/bin:${PATH}"
             
             source "${VENTI_HOME}/build/autotools/${{ matrix.target }}.sh"
@@ -205,19 +205,19 @@ jobs:
             curl --show-error --connect-timeout '10' --retry '15' --retry-all-errors --fail --silent --location --url "${SIL_URL}" --output "${SIL_TARBALL}"
             tar --directory="$(dirname "${SIL_TARBALL}")" --extract --file="${SIL_TARBALL}"
             
-            export SIL_HOME='/tmp/sil'
+            export SIL_HOME='/tmp/android-gcc-cross'
             export PATH="${SIL_HOME}/bin:${PATH}"
             
             source "${SIL_HOME}/build/autotools/${{ matrix.target }}.sh"
         elif [[ '${{ matrix.target }}' = *'-android'* ]]; then
-            declare -r PINO_TAG='gcc-15'
+            declare -r PINO_TAG='gcc-16'
             declare -r PINO_TARBALL='/tmp/toolchain.tar.xz'
-            declare -r PINO_URL="https://github.com/AmanoTeam/Pino/releases/download/${PINO_TAG}/x86_64-unknown-linux-gnu.tar.xz"
+            declare -r PINO_URL="https://github.com/AmanoTeam/android-gcc-cross/releases/download/${PINO_TAG}/x86_64-unknown-linux-gnu.tar.xz"
             
             curl --show-error --connect-timeout '10' --retry '15' --retry-all-errors --fail --silent --location --url "${PINO_URL}" --output "${PINO_TARBALL}"
             tar --directory="$(dirname "${PINO_TARBALL}")" --extract --file="${PINO_TARBALL}"
             
-            export PINO_HOME='/tmp/pino'
+            export PINO_HOME='/tmp/android-gcc-cross'
             export PATH="${PINO_HOME}/bin:${PATH}"
             
             source "${PINO_HOME}/build/autotools/${{ matrix.target }}.sh"
@@ -257,7 +257,7 @@ jobs:
     - name: Generate tarball
       run: |
         declare tarball_filename='/tmp/${{ matrix.target }}.tar.xz'
-        tar --directory='/tmp' --create --file=- 'venti' | xz --threads='0' --compress -9 > "${tarball_filename}"
+        tar --directory='/tmp' --create --file=- 'dragonfly-gcc-cross' | xz --threads='0' --compress -9 > "${tarball_filename}"
         sha256sum "${tarball_filename}" | sed 's|/tmp/||' > "${tarball_filename}.sha256"
     - name: Upload artifact
       uses: actions/upload-artifact@main
