@@ -164,12 +164,12 @@ jobs:
         elif [[ '${{ matrix.target }}' = *'-freebsd' ]]; then
             declare -r LOKI_TAG='gcc-15'
             declare -r LOKI_TARBALL='/tmp/toolchain.tar.xz'
-            declare -r LOKI_URL="https://github.com/AmanoTeam/Loki/releases/download/${LOKI_TAG}/x86_64-unknown-linux-gnu.tar.xz"
+            declare -r LOKI_URL="https://github.com/AmanoTeam/freebsd-gcc-cross/releases/download/${LOKI_TAG}/x86_64-unknown-linux-gnu.tar.xz"
             
             curl --silent --connect-timeout '10' --retry '15' --retry-all-errors --fail --location --url "${LOKI_URL}" --output "${LOKI_TARBALL}"
             tar --directory="$(dirname "${LOKI_TARBALL}")" --extract --file="${LOKI_TARBALL}"
             
-            export LOKI_HOME='/tmp/loki'
+            export LOKI_HOME='/tmp/freebsd-gcc-cross'
             export PATH="${LOKI_HOME}/bin:${PATH}"
             
             source "${LOKI_HOME}/build/autotools/${{ matrix.target }}.sh"
@@ -229,7 +229,7 @@ jobs:
                 --url 'https://raw.githubusercontent.com/AmanoTeam/OSXCross-Builds/refs/heads/master/main.sh' \
                     | bash -s -- install
             
-            export DARWIN_HOME='/tmp/darwin'
+            export DARWIN_HOME='/tmp/darwin-clang-cross'
             export PATH="${DARWIN_HOME}/bin:${PATH}"
             
             source "${DARWIN_HOME}/build/autotools/${{ matrix.target }}.sh"
@@ -278,12 +278,12 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@master
         with:
-          tag_name: gcc-15
-          name: GCC 15
+          tag_name: gcc-16
+          name: GCC 16
           files: ./*/*-unknown-*.tar.xz*
           draft: false
           prerelease: false
           fail_on_unmatched_files: true
-          body: "* Update to GCC 15"
+          body: "* Update to GCC 16"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
